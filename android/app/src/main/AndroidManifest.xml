@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gps_tracker_flutter">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Izin Akses Internet & Jaringan untuk Real-Time GPS & Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
