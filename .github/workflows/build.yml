@@ -23,6 +23,13 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Generate Flutter project files
+        run: |
+          mkdir -p backup_manifest
+          cp android/app/src/main/AndroidManifest.xml backup_manifest/AndroidManifest.xml || true
+          flutter create --platforms=android --org com.example.gps_tracker_flutter .
+          cp backup_manifest/AndroidManifest.xml android/app/src/main/AndroidManifest.xml || true
+
       - name: Get dependencies
         run: flutter pub get
 
