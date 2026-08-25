@@ -86,8 +86,6 @@ class TrackingProvider extends ChangeNotifier {
         _trailPoints.add(newPos);
         if (_trailPoints.length > 500) _trailPoints.removeAt(0);
       }
-    }
-
       // Kalkulasi jarak Geofence hanya memakai posisi tepercaya.
       _evaluateGeofence();
     }
