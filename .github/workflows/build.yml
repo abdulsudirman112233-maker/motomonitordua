@@ -44,7 +44,16 @@ jobs:
         run: flutter analyze --no-fatal-infos
 
       - name: Build universal APK
-        run: flutter build apk --release --build-name=1.1.0 --build-number=${{ github.run_number }}
+        shell: bash
+        run: |
+          set +e
+          flutter build apk --release --build-name=1.1.0 --build-number=${{ github.run_number }} 2>&1 | tee build.log
+          build_status=${PIPESTATUS[0]}
+          if [ "$build_status" -ne 0 ]; then
+            message=$(tail -n 60 build.log | tr '\n' ' ' | sed 's/%/%25/g; s/\r/%0D/g')
+            echo "::error title=Android build failed::$message"
+          fi
+          exit "$build_status"
 
       - name: Build architecture APKs
         run: flutter build apk --release --split-per-abi --build-name=1.1.0 --build-number=${{ github.run_number }}
