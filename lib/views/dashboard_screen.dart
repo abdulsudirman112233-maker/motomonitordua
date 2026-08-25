@@ -20,7 +20,7 @@ class DashboardScreen extends StatelessWidget {
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
-                radialGradient: RadialGradient(
+                gradient: RadialGradient(
                   center: Alignment(0.0, -0.6),
                   radius: 1.2,
                   colors: [
@@ -52,7 +52,7 @@ class DashboardScreen extends StatelessWidget {
                         if (isWideScreen) {
                           // Desktop / Web / Tablet 2-Column Grid
                           return Row(
-                            cross: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Left Column: Interactive Map & Activity Logs
                               Expanded(

@@ -31,7 +31,7 @@ class TelemetryCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        cross: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -157,7 +157,7 @@ class TelemetryCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFF334155)),
       ),
       child: Column(
-        cross: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -179,7 +179,7 @@ class TelemetryCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             value,
-            style: GoogleFonts.jetbrainsMono(
+            style: GoogleFonts.jetBrainsMono(
               fontSize: 12,
               fontWeight: FontWeight.w800,
               color: valueColor,

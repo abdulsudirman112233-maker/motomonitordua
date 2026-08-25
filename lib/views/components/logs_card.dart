@@ -26,7 +26,7 @@ class LogsCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        cross: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +48,7 @@ class LogsCard extends StatelessWidget {
               ),
               Text(
                 "Auto-sync Firebase RTDB",
-                style: GoogleFonts.jetbrainsMono(
+                style: GoogleFonts.jetBrainsMono(
                   fontSize: 10,
                   color: const Color(0xFF64748B),
                 ),
@@ -90,12 +90,12 @@ class LogsCard extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Row(
-                        cross: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Time Badge
                           Text(
                             log.datetime,
-                            style: GoogleFonts.jetbrainsMono(
+                            style: GoogleFonts.jetBrainsMono(
                               fontSize: 10,
                               color: const Color(0xFF64748B),
                             ),
@@ -112,7 +112,7 @@ class LogsCard extends StatelessWidget {
                             ),
                             child: Text(
                               log.eventType,
-                              style: GoogleFonts.jetbrainsMono(
+                              style: GoogleFonts.jetBrainsMono(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w700,
                                 color: badgeColor,

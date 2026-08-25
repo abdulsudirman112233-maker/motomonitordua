@@ -33,7 +33,7 @@ class GeofenceCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        cross: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header & Toggle Switch
           Row(
@@ -85,7 +85,7 @@ class GeofenceCard extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
-                    cross: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         isBreached ? "PAGAR VIRTUAL TERLANGGAR (ALERT!)" : "PAGAR VIRTUAL AKTIF (AMAN)",
@@ -159,7 +159,7 @@ class GeofenceCard extends StatelessWidget {
                 ),
                 child: Text(
                   "${geofenceLimit.toInt()} Meter",
-                  style: GoogleFonts.jetbrainsMono(
+                  style: GoogleFonts.jetBrainsMono(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF00F0FF),

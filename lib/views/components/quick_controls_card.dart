@@ -28,7 +28,7 @@ class QuickControlsCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        cross: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Card Title Header
           Row(
@@ -51,7 +51,7 @@ class QuickControlsCard extends StatelessWidget {
               ),
               Text(
                 "ESP8266 + SIM800L",
-                style: GoogleFonts.jetbrainsMono(
+                style: GoogleFonts.jetBrainsMono(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF64748B),
@@ -77,7 +77,7 @@ class QuickControlsCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Column(
-                    cross: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [

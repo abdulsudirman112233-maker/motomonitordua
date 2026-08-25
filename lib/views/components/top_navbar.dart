@@ -50,7 +50,7 @@ class TopNavbar extends StatelessWidget {
 
           return Wrap(
             alignment: WrapAlignment.spaceBetween,
-            cross: WrapCrossAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 12,
             runSpacing: 12,
             children: [
@@ -69,7 +69,7 @@ class TopNavbar extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Column(
-                    cross: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "SMART VEHICLE IOT TRACKER",
@@ -103,7 +103,7 @@ class TopNavbar extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                cross: WrapCrossAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   // Connection Badge
                   _buildBadge(
@@ -167,7 +167,7 @@ class TopNavbar extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: GoogleFonts.jetbrainsMono(
+            style: GoogleFonts.jetBrainsMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
               color: color,

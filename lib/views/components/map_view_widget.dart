@@ -81,7 +81,7 @@ class _MapViewWidgetState extends State<MapViewWidget> {
                   const SizedBox(width: 6),
                   Text(
                     "Lat: ${telemetry.latitude.toStringAsFixed(5)}, Lng: ${telemetry.longitude.toStringAsFixed(5)}",
-                    style: GoogleFonts.jetbrainsMono(
+                    style: GoogleFonts.jetBrainsMono(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFFE2E8F0),
