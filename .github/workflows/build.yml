@@ -1,13 +1,19 @@
-name: Build Android APK
+name: Build Android
 
 on:
   push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  pull_request:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -22,22 +28,37 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
 
       - name: Generate Flutter project files
         run: |
-          mkdir -p backup_manifest
-          cp android/app/src/main/AndroidManifest.xml backup_manifest/AndroidManifest.xml || true
-          flutter create --platforms=android --org com.example.gps_tracker_flutter .
-          cp backup_manifest/AndroidManifest.xml android/app/src/main/AndroidManifest.xml || true
+          cp android/app/src/main/AndroidManifest.xml /tmp/AndroidManifest.xml
+          flutter create --platforms=android --org id.motor.monitor --project-name gps_tracker_flutter .
+          cp /tmp/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Build universal APK
+        run: flutter build apk --release --build-name=1.1.0 --build-number=${{ github.run_number }}
+
+      - name: Build architecture APKs
+        run: flutter build apk --release --split-per-abi --build-name=1.1.0 --build-number=${{ github.run_number }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: motor-monitor-android-${{ github.run_number }}
+          path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish tagged release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/*.apk
+          generate_release_notes: true

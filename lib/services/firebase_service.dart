@@ -10,6 +10,7 @@ class FirebaseService {
   final String vehicleId = "vehicle_01";
 
   Timer? _pollingTimer;
+  bool _fetchInProgress = false;
 
   /// Memulai sinkronisasi berkala (polling / SSE) ke Firebase RTDB
   void startRealtimeListener({
@@ -34,25 +35,30 @@ class FirebaseService {
     Function(ControlsModel) onControlsUpdated,
     Function(LogModel) onLogAdded,
   ) async {
+    if (_fetchInProgress) return;
+    _fetchInProgress = true;
     try {
-      final url = Uri.parse('$databaseUrl/vehicles/$vehicleId.json');
-      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      final telemetryUrl = Uri.parse('$databaseUrl/vehicles/$vehicleId/telemetry.json');
+      final controlsUrl = Uri.parse('$databaseUrl/vehicles/$vehicleId/controls.json');
+      final responses = await Future.wait([
+        http.get(telemetryUrl).timeout(const Duration(seconds: 4)),
+        http.get(controlsUrl).timeout(const Duration(seconds: 4)),
+      ]);
+      final response = responses[0];
 
       if (response.statusCode == 200 && response.body != 'null') {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        if (data.containsKey('telemetry') && data['telemetry'] is Map) {
-          final telemetry = TelemetryModel.fromJson(Map<String, dynamic>.from(data['telemetry']));
-          onTelemetryUpdated(telemetry);
-        }
-
-        if (data.containsKey('controls') && data['controls'] is Map) {
-          final controls = ControlsModel.fromJson(Map<String, dynamic>.from(data['controls']));
-          onControlsUpdated(controls);
-        }
+        final data = jsonDecode(response.body);
+        if (data is Map) onTelemetryUpdated(TelemetryModel.fromJson(Map<String, dynamic>.from(data)));
+      }
+      final controlsResponse = responses[1];
+      if (controlsResponse.statusCode == 200 && controlsResponse.body != 'null') {
+        final data = jsonDecode(controlsResponse.body);
+        if (data is Map) onControlsUpdated(ControlsModel.fromJson(Map<String, dynamic>.from(data)));
       }
     } catch (e) {
       // Menangani error koneksi secara efisien tanpa crash
+    } finally {
+      _fetchInProgress = false;
     }
   }
 

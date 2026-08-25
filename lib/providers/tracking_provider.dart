@@ -53,9 +53,6 @@ class TrackingProvider extends ChangeNotifier {
       speed: 0.0,
     ));
 
-    // Tambahkan titik jejak awal
-    _trailPoints.add(LatLng(_telemetry.latitude, _telemetry.longitude));
-
     // Mulai listener Firebase
     _firebaseService.startRealtimeListener(
       onTelemetryUpdated: (newTelemetry) {
@@ -71,6 +68,11 @@ class TrackingProvider extends ChangeNotifier {
   }
 
   void _handleTelemetryUpdate(TelemetryModel newTelemetry) {
+    if (newTelemetry.timestamp > 0 && _telemetry.timestamp > 0 &&
+        newTelemetry.timestamp < _telemetry.timestamp) return;
+    if (newTelemetry.timestamp == 0 && newTelemetry.sequence >= 0 &&
+        _telemetry.sequence >= 0 && newTelemetry.sequence < _telemetry.sequence) return;
+
     // Filter jitter kecepatan GPS jika < 2.5 km/h
     double cleanSpeed = newTelemetry.speed;
     if (cleanSpeed < 2.5) cleanSpeed = 0.0;
@@ -78,14 +80,17 @@ class TrackingProvider extends ChangeNotifier {
     _telemetry = newTelemetry.copyWith(speed: cleanSpeed);
 
     // Tambahkan titik koordinat ke garis jejak rute
-    final newPos = LatLng(_telemetry.latitude, _telemetry.longitude);
-    if (_trailPoints.isEmpty || _trailPoints.last != newPos) {
-      _trailPoints.add(newPos);
-      if (_trailPoints.length > 500) _trailPoints.removeAt(0);
+    if (_telemetry.hasTrustedPosition) {
+      final newPos = LatLng(_telemetry.latitude, _telemetry.longitude);
+      if (_trailPoints.isEmpty || _trailPoints.last != newPos) {
+        _trailPoints.add(newPos);
+        if (_trailPoints.length > 500) _trailPoints.removeAt(0);
+      }
     }
 
-    // Kalkulasi jarak Geofence
-    _evaluateGeofence();
+      // Kalkulasi jarak Geofence hanya memakai posisi tepercaya.
+      _evaluateGeofence();
+    }
 
     // Periksa pemicu alarm pencurian
     if (_telemetry.vibrationDetected && _controls.armed) {
@@ -102,6 +107,7 @@ class TrackingProvider extends ChangeNotifier {
   }
 
   void _evaluateGeofence() {
+    if (!_telemetry.hasTrustedPosition) return;
     if (_controls.anchorLat != null && _controls.anchorLng != null) {
       _liveGeofenceDistance = GeofenceService.calculateDistanceMeters(
         _telemetry.latitude,
@@ -197,6 +203,7 @@ class TrackingProvider extends ChangeNotifier {
   }
 
   Future<void> setAnchorToCurrentLocation() async {
+    if (!_telemetry.hasTrustedPosition) return;
     _controls = _controls.copyWith(
       anchorLat: _telemetry.latitude,
       anchorLng: _telemetry.longitude,

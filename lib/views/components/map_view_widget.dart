@@ -21,10 +21,12 @@ class _MapViewWidgetState extends State<MapViewWidget> {
     final provider = Provider.of<TrackingProvider>(context);
     final telemetry = provider.telemetry;
     final controls = provider.controls;
-    final currentPos = LatLng(telemetry.latitude, telemetry.longitude);
+    final currentPos = telemetry.hasTrustedPosition
+        ? LatLng(telemetry.latitude, telemetry.longitude)
+        : const LatLng(-5.460095, 122.616677);
 
     // Otomatis fokuskan ke kendaraan jika AutoCenter aktif
-    if (provider.autoCenter) {
+    if (provider.autoCenter && telemetry.hasTrustedPosition) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _mapController.move(currentPos, _mapController.camera.zoom);
       });
@@ -96,7 +98,7 @@ class _MapViewWidgetState extends State<MapViewWidget> {
                     isActive: provider.autoCenter,
                     onTap: () {
                       provider.toggleAutoCenter(!provider.autoCenter);
-                      if (!provider.autoCenter) {
+                      if (!provider.autoCenter && telemetry.hasTrustedPosition) {
                         _mapController.move(currentPos, 18);
                       }
                     },
@@ -210,7 +212,7 @@ class _MapViewWidgetState extends State<MapViewWidget> {
                     ),
 
                   // Vehicle Marker Layer
-                  MarkerLayer(
+                  if (telemetry.hasTrustedPosition) MarkerLayer(
                     markers: [
                       Marker(
                         point: currentPos,

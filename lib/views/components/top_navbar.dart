@@ -26,7 +26,10 @@ class TopNavbar extends StatelessWidget {
     final telemetry = provider.telemetry;
     final controls = provider.controls;
 
-    final bool isOnline = telemetry.connectionMode != 'OFFLINE';
+    final bool isOnline = telemetry.isFresh;
+    final connectionLabel = !isOnline
+        ? 'OFFLINE'
+        : (!telemetry.gpsFixed ? 'ONLINE · NO GPS FIX' : telemetry.connectionMode);
     final bool isArmed = controls.armed;
     final bool isLocked = controls.lockEngine;
 
@@ -108,7 +111,7 @@ class TopNavbar extends StatelessWidget {
                   // Connection Badge
                   _buildBadge(
                     icon: isOnline ? Icons.wifi : Icons.wifi_off,
-                    label: telemetry.connectionMode,
+                    label: connectionLabel,
                     color: isOnline ? const Color(0xFF00E676) : const Color(0xFFFF3B30),
                   ),
 
@@ -128,7 +131,9 @@ class TopNavbar extends StatelessWidget {
 
                   // Google Maps Quick Button
                   ElevatedButton.icon(
-                    onPressed: () => _openGoogleMaps(context, telemetry.latitude, telemetry.longitude),
+                    onPressed: telemetry.hasTrustedPosition
+                        ? () => _openGoogleMaps(context, telemetry.latitude, telemetry.longitude)
+                        : null,
                     icon: const Icon(Icons.map_rounded, size: 16),
                     label: Text(
                       "Google Maps",
